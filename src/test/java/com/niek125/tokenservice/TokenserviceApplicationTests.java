@@ -1,4 +1,4 @@
-package com.niek125.tokenservice.tokenservice;
+package com.niek125.tokenservice;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
