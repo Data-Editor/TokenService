@@ -31,4 +31,4 @@ build/
 .vscode/
 
 src/main/resources/PrivateKey.pem
-src/main/resources/PublicKey.pem
+src/main/resources/dataeditor-firebase-adminsdk-fhb0o-c95d73760a.json

@@ -2,12 +2,14 @@ package com.niek125.tokenservice.controllers;
 
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import com.niek125.tokenservice.TokenGenerator.ITokenGenerator;
 import com.niek125.tokenservice.TokenGenerator.TokenGenerator;
 import com.niek125.tokenservice.models.Role;
-import com.niek125.tokenservice.models.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -15,12 +17,9 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Base64;
 
 import static com.niek125.tokenservice.TokenGenerator.PemUtils.readPrivateKeyFromFile;
-import static com.niek125.tokenservice.TokenGenerator.PemUtils.readPublicKeyFromFile;
 
 @RequestMapping("/token")
 @RestController
@@ -41,10 +40,10 @@ public class TokenController {
                         (RSAPrivateKey) readPrivateKeyFromFile("src/main/resources/PrivateKey.pem", "RSA")));
     }
 
-    @RequestMapping("/token/{gtoken}")
-    public String getToken(@PathVariable("gtoken") String gtoken) throws IOException {
-        UserData userData = objectMapper.readValue(new String(Base64.getUrlDecoder().decode(gtoken)), UserData.class);
-        Role[] permissions = restTemplate.getForObject("http://role-management-service/role/getroles/" + userData.getUid(), Role[].class);
-        return generator.getNewToken(userData, permissions);
+    @RequestMapping("/token")
+    public String getToken(@RequestHeader("gtoken") String gtoken) throws IOException, FirebaseAuthException {
+        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(gtoken);
+        Role[] permissions = restTemplate.getForObject("http://role-management-service/role/getroles/" + decodedToken.getUid(), Role[].class);
+        return generator.getNewToken(decodedToken, permissions);
     }
 }
