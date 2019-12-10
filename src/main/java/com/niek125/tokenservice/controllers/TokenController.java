@@ -9,6 +9,9 @@ import com.niek125.tokenservice.TokenGenerator.ITokenGenerator;
 import com.niek125.tokenservice.TokenGenerator.TokenGenerator;
 import com.niek125.tokenservice.models.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,6 +46,13 @@ public class TokenController {
     @RequestMapping("/token")
     public String getToken(@RequestHeader("gtoken") String gtoken) throws IOException, FirebaseAuthException {
         FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(gtoken);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        restTemplate.postForObject("http://role-management-service/user/save", new HttpEntity<String>(
+                                  "{\"userid\":\"" + decodedToken.getUid() +
+                        "\",\"profilepicture\":\"" + decodedToken.getPicture() +
+                              "\",\"username\":\"" + decodedToken.getName() + "\"}",
+                headers), String.class);
         Role[] permissions = restTemplate.getForObject("http://role-management-service/role/getroles/" + decodedToken.getUid(), Role[].class);
         return generator.getNewToken(decodedToken, permissions);
     }

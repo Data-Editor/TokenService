@@ -21,7 +21,6 @@ public class TokenGenerator implements ITokenGenerator{
 
     @Override
     public String getNewToken(FirebaseToken userData, Role[] permissions) throws JsonProcessingException {
-        String permissionsstr = objectMapper.writeValueAsString(permissions);
         return JWT.create()
                 .withIssuer("data-editor-token-service")
                 .withJWTId(UUID.randomUUID().toString())
@@ -30,7 +29,7 @@ public class TokenGenerator implements ITokenGenerator{
                 .withClaim("uid", userData.getUid())
                 .withClaim("unm", userData.getName())
                 .withClaim("pfp", userData.getPicture())
-                .withClaim("pms", permissionsstr)
+                .withClaim("pms", objectMapper.writeValueAsString(permissions))
                 .sign(algorithm);
     }
 }
