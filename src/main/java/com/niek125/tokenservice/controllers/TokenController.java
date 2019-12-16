@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
-import java.security.spec.InvalidKeySpecException;
 
 import static com.niek125.tokenservice.TokenGenerator.PemUtils.readPrivateKeyFromFile;
 
@@ -32,7 +30,7 @@ public class TokenController {
     private ITokenGenerator generator;
     private ObjectMapper objectMapper;
 
-    public TokenController() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
+    public TokenController() throws IOException {
         java.security.Security.addProvider(
                 new org.bouncycastle.jce.provider.BouncyCastleProvider()
         );
@@ -49,9 +47,10 @@ public class TokenController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         restTemplate.postForObject("http://role-management-service/user/save", new HttpEntity<String>(
-                                  "{\"userid\":\"" + decodedToken.getUid() +
+                            "{\"userid\":\"" + decodedToken.getUid() +
                         "\",\"profilepicture\":\"" + decodedToken.getPicture() +
-                              "\",\"username\":\"" + decodedToken.getName() + "\"}",
+                              "\",\"username\":\"" + decodedToken.getName() +
+                                 "\",\"email\":\"" + decodedToken.getEmail() + "\"}",
                 headers), String.class);
         Role[] permissions = restTemplate.getForObject("http://role-management-service/role/getroles/" + decodedToken.getUid(), Role[].class);
         return generator.getNewToken(decodedToken, permissions);
