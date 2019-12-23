@@ -1,4 +1,4 @@
-package com.niek125.tokenservice.TokenGenerator;
+package com.niek125.tokenservice.utils;
 
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;

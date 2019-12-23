@@ -6,17 +6,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseToken;
 import com.niek125.tokenservice.models.Role;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.UUID;
 
 public class TokenGenerator implements ITokenGenerator{
-    private ObjectMapper objectMapper;
-    private Algorithm algorithm;
+    private final ObjectMapper objectMapper;
+    private final Algorithm algorithm;
 
-    public TokenGenerator(Algorithm algorithm){
+    @Autowired
+    public TokenGenerator(ObjectMapper objectMapper, Algorithm algorithm) {
+        this.objectMapper = objectMapper;
         this.algorithm = algorithm;
-        this.objectMapper = new ObjectMapper();
     }
 
     @Override
