@@ -30,5 +30,8 @@ build/
 ### VS Code ###
 .vscode/
 
-src/main/resources/PrivateKey.pem
+src/main/resources/application.properties
 src/main/resources/dataeditor-firebase-adminsdk-fhb0o-c95d73760a.json
+src/main/resources/PrivateKey.pem
+
+tokenservicekeystore.p12
