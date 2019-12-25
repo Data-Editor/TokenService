@@ -36,13 +36,13 @@ public class TokenController {
         final FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(gtoken);
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        restTemplate.postForObject("http://role-management-service/user/save", new HttpEntity<>(
+        restTemplate.postForObject("https://role-management-service/user/save", new HttpEntity<>(
                 "{\"userid\":\"" + decodedToken.getUid() +
                         "\",\"profilepicture\":\"" + decodedToken.getPicture() +
                         "\",\"username\":\"" + decodedToken.getName() +
                         "\",\"email\":\"" + decodedToken.getEmail() + "\"}",
                 headers), String.class);
-        final Role[] permissions = restTemplate.getForObject("http://role-management-service/role/getroles/" + decodedToken.getUid(), Role[].class);
+        final Role[] permissions = restTemplate.getForObject("https://role-management-service/role/getroles/" + decodedToken.getUid(), Role[].class);
         return generator.getNewToken(decodedToken, permissions);
     }
 }
