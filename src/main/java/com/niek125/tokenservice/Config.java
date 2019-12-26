@@ -2,6 +2,7 @@ package com.niek125.tokenservice;
 
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.auth.FirebaseAuth;
 import com.niek125.tokenservice.TokenGenerator.ITokenGenerator;
 import com.niek125.tokenservice.TokenGenerator.TokenGenerator;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
@@ -28,6 +29,11 @@ import static com.niek125.tokenservice.utils.PemUtils.readPrivateKeyFromFile;
 
 @Configuration
 public class Config {
+    @Bean
+    public FirebaseAuth firebaseAuth(){
+        return FirebaseAuth.getInstance();
+    }
+
     @Bean
     @LoadBalanced
     public RestTemplate restTemplate() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
