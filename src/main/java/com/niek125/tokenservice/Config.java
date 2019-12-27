@@ -30,30 +30,27 @@ import static com.niek125.tokenservice.utils.PemUtils.readPrivateKeyFromFile;
 @Configuration
 public class Config {
     @Bean
-    public FirebaseAuth firebaseAuth(){
+    public FirebaseAuth firebaseAuth() {
         return FirebaseAuth.getInstance();
     }
 
     @Bean
     @LoadBalanced
     public RestTemplate restTemplate() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
-        TrustStrategy acceptingTrustStrategy = new TrustSelfSignedStrategy();
+        final TrustStrategy acceptingTrustStrategy = new TrustSelfSignedStrategy();
 
-        SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
-                .loadTrustMaterial(null, acceptingTrustStrategy)
-                .build();
+        final SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
 
-        SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+        final SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
 
-        CloseableHttpClient httpClient = HttpClients.custom()
-                .setSSLSocketFactory(csf)
-                .build();
+        final CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
 
-        HttpComponentsClientHttpRequestFactory requestFactory =
-                new HttpComponentsClientHttpRequestFactory();
+        final HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
 
         requestFactory.setHttpClient(httpClient);
-        RestTemplate restTemplate = new RestTemplate(requestFactory);
+
+        final RestTemplate restTemplate = new RestTemplate(requestFactory);
+
         return restTemplate;
     }
 
