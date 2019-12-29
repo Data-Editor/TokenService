@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.niek125.tokenservice.TokenGenerator.ITokenGenerator;
 import com.niek125.tokenservice.TokenGenerator.TokenGenerator;
+import com.niek125.tokenservice.kafka.KafkaProducer;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
@@ -16,6 +17,7 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.SSLContext;
@@ -62,6 +64,12 @@ public class Config {
     @Bean
     public Algorithm algorithm() throws IOException {
         return Algorithm.RSA512(null, (RSAPrivateKey) readPrivateKeyFromFile("src/main/resources/PrivateKey.pem", "RSA"));
+    }
+
+    @Bean
+    @Autowired
+    public KafkaProducer kafkaDispatcher(KafkaTemplate<String, String> template) {
+        return new KafkaProducer(template, new ObjectMapper());
     }
 
     @Bean
