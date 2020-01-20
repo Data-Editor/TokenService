@@ -20,7 +20,7 @@ public class TokenServiceApplication {
         );
 
         FileInputStream serviceAccount =
-                new FileInputStream("src/main/resources/dataeditor-firebase-adminsdk-fhb0o-c95d73760a.json");
+                new FileInputStream("D:\\Semester3\\Software\\BigIdea\\Project\\backend\\TokenService\\src\\main\\resources\\dataeditor-firebase-adminsdk-fhb0o-c95d73760a.json");
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))

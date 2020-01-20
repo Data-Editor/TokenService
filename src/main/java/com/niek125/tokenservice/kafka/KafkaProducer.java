@@ -2,7 +2,9 @@ package com.niek125.tokenservice.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.niek125.tokenservice.models.KafkaMessage;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import com.niek125.tokenservice.events.DataEditorEvent;
 import lombok.AllArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 
@@ -11,11 +13,10 @@ public class KafkaProducer {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper mapper;
 
-    public void dispatch(KafkaMessage message) {
-        try {
-            kafkaTemplate.send(message.getKafkaHeader().getPayload(), mapper.writeValueAsString(message.getKafkaHeader()) + "\n" + message.getPayload());
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+    public void dispatch(String topic, DataEditorEvent event) throws JsonProcessingException {
+        DocumentContext json = JsonPath.parse("{}");
+        json = json.put("$", "class", event.getClass().getSimpleName());
+        json = json.put("$", "event", mapper.writeValueAsString(event));
+        kafkaTemplate.send(topic, json.jsonString());
     }
 }

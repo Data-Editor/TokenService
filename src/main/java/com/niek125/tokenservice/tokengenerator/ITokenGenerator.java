@@ -1,4 +1,4 @@
-package com.niek125.tokenservice.TokenGenerator;
+package com.niek125.tokenservice.tokengenerator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseToken;

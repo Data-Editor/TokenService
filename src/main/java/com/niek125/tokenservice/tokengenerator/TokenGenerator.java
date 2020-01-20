@@ -1,4 +1,4 @@
-package com.niek125.tokenservice.TokenGenerator;
+package com.niek125.tokenservice.tokengenerator;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

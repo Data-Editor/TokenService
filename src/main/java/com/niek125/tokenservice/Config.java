@@ -3,8 +3,8 @@ package com.niek125.tokenservice;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
-import com.niek125.tokenservice.TokenGenerator.ITokenGenerator;
-import com.niek125.tokenservice.TokenGenerator.TokenGenerator;
+import com.niek125.tokenservice.tokengenerator.ITokenGenerator;
+import com.niek125.tokenservice.tokengenerator.TokenGenerator;
 import com.niek125.tokenservice.kafka.KafkaProducer;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -13,6 +13,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -51,9 +52,7 @@ public class Config {
 
         requestFactory.setHttpClient(httpClient);
 
-        final RestTemplate restTemplate = new RestTemplate(requestFactory);
-
-        return restTemplate;
+        return new RestTemplate(requestFactory);
     }
 
     @Bean
@@ -61,9 +60,11 @@ public class Config {
         return new ObjectMapper();
     }
 
+    @Value("${com.niek125.privatekey}")
+
     @Bean
     public Algorithm algorithm() throws IOException {
-        return Algorithm.RSA512(null, (RSAPrivateKey) readPrivateKeyFromFile("src/main/resources/PrivateKey.pem", "RSA"));
+        return Algorithm.RSA512(null, (RSAPrivateKey) readPrivateKeyFromFile("PrivateKey.pem", "RSA"));
     }
 
     @Bean
